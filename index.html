@@ -239,9 +239,9 @@ footer .l { display: flex; gap: 20px; flex-wrap: wrap; }
 
   <section class="hero">
     <div>
-      <p class="eyebrow mono">バケットリスト / VISION / 価値観</p>
+      <p class="eyebrow mono">bucket list / ありたい姿 / 価値観</p>
       <h1>いつかやりたいことを、<br><span class="hl">いま、書いておく。</span></h1>
-      <p class="lead">行きたい場所、会いたい人、挑戦してみたいこと。頭の中にあるあいだは、どれも「いつか」のままです。willistは、バケットリストと、ありたい姿、大事にしている価値観をひとつのノートにまとめておく場所です。</p>
+      <p class="lead">行きたい場所、会いたい人、挑戦してみたいこと。頭の中にあるあいだは、どれも「いつか」のままです。willistは、bucket listと、ありたい姿、大事にしている価値観をひとつのノートにまとめておく場所です。</p>
       <p class="lead">書いたものは、Instagramの投稿やストーリーズにそのまま使える画像にして書き出せます。</p>
       <div class="cta">
         <a class="btn" href="app.html">ノートを開く</a>
@@ -260,12 +260,12 @@ footer .l { display: flex; gap: 20px; flex-wrap: wrap; }
   </div>
   <div>
     <div class="entry">
-      <h3>バケットリスト</h3>
+      <h3>bucket list</h3>
       <p>行ってみたい場所から、いつか身につけたいことまで。大きさは問いません。カテゴリと目標の時期をつけておくと、見返したときに順番を決めやすくなります。叶ったものには日付が残って、判子が押されます。</p>
       <p class="eg">例:<span>オーロラを見に行く</span>(旅・2027年)</p>
     </div>
     <div class="entry">
-      <h3>VISION</h3>
+      <h3>ありたい姿</h3>
       <p>これから自分は、どんな人間になりたいか。ありたい姿を文章で書きます。短くても、あとから書き換えても大丈夫です。</p>
       <p class="eg">例:朝は海沿いを走って、昼は好きな仕事に集中して、夜は家族と食卓を囲む。</p>
     </div>
@@ -295,7 +295,7 @@ footer .l { display: flex; gap: 20px; flex-wrap: wrap; }
 <section class="wrap start">
   <h2>まずは5つ、<br>書いてみる。</h2>
   <div>
-    <p>登録したら、思いつくままに5つだけ書いてみてください。分類や並べ替えは、あとからいくらでも直せます。VISIONや価値観は、リストを書いたあとでも間に合います。</p>
+    <p>登録したら、思いつくままに5つだけ書いてみてください。分類や並べ替えは、あとからいくらでも直せます。ありたい姿や価値観は、リストを書いたあとでも間に合います。</p>
     <a class="btn" href="app.html">ノートを開く</a>
   </div>
 </section>
@@ -343,14 +343,14 @@ footer .l { display: flex; gap: 20px; flex-wrap: wrap; }
 
   function bucket(tpl, kind, n) {
     var s = el("div", "sample " + kind + " t-" + tpl); var inn = el("div", "in");
-    inn.appendChild(head("バケットリスト", "2026.10"));
+    inn.appendChild(head("bucket list", "2026.10"));
     var ol = el("ol");
     ITEMS.slice(0, n).forEach(function (t, i) { var li = el("li"); li.appendChild(el("span", "n", String(i + 1).padStart(2, "0"))); li.appendChild(el("span", null, t)); ol.appendChild(li); });
     inn.appendChild(ol); inn.appendChild(foot()); s.appendChild(inn); return s;
   }
   function vision(tpl, kind) {
     var s = el("div", "sample " + kind + " t-" + tpl); var inn = el("div", "in");
-    inn.appendChild(el("div", "lbl", "MY VISION"));
+    inn.appendChild(el("div", "lbl", "ありたい姿"));
     inn.appendChild(el("div", "bar"));
     inn.appendChild(el("div", "q", VISION)); inn.appendChild(foot()); s.appendChild(inn); return s;
   }
