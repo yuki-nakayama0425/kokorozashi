@@ -282,7 +282,7 @@ select { appearance: auto; }
   function sample() {
     var id = 0; function it(title, cat, year, done, dd) { return { id: ++id, title: title, cat: cat, year: year, done: !!done, doneDate: dd || "" }; }
     return {
-      sample: true, handle: "yuki",
+      sample: true, handle: "",
       items: [
         it("オーロラを見に行く", "旅", 2027), it("フルマラソンを完走する", "健康", 2027), it("本を出版する", "仕事", 2029),
         it("ひとりでバックパック旅に出る", "旅", 2025, true, "2025.08"), it("家族で海外に住んでみる", "人生", 2032),
@@ -298,7 +298,7 @@ select { appearance: auto; }
       ]
     };
   }
-  function blank() { return { sample: false, handle: "yuki", items: [], nextId: 1, vision: { main: "" }, values: [] }; }
+  function blank() { return { sample: false, handle: "", items: [], nextId: 1, vision: { main: "" }, values: [] }; }
 
   var state;
   function load() { try { var s = localStorage.getItem(KEY); if (s) { var d = JSON.parse(s); if (d.vision && d.vision.main === undefined) d.vision = { main: d.vision['5y'] || '' }; return d; } } catch (e) {} return sample(); }
@@ -329,12 +329,14 @@ select { appearance: auto; }
   }
 
   /* ---------- ホーム ---------- */
+  function helloText() { return state.handle ? "こんにちは、" + esc(state.handle) + "さん" : "こんにちは"; }
   function viewHome() {
     var total = state.items.length, done = state.items.filter(function (i) { return i.done; }).length;
     var pct = total ? Math.round(done / total * 100) : 0;
     var v5 = (state.vision.main || "").trim();
     var next = sortedOpen().slice(0, 3);
-    return '<h1>こんにちは、' + esc(state.handle) + 'さん</h1>' + noticeHTML() +
+    return '<h1 id="hello">' + helloText() + '</h1>' + noticeHTML() +
+      '<div class="field" style="max-width:260px;margin-top:4px"><label for="handle">名前(ホームと書き出し画像に使います)</label><input type="text" id="handle" value="' + esc(state.handle) + '" placeholder="未入力でも使えます" autocomplete="off"></div>' +
       '<section class="sec"><h2>叶ったこと</h2><div class="big"><span class="num">' + done + '</span><span class="of">/ ' + total + ' 個</span></div>' +
       '<div class="meter" role="img" aria-label="達成率 ' + pct + '%"><i style="width:' + pct + '%"></i></div></section>' +
       '<section class="sec"><h2>ありたい姿</h2>' + (v5 ? '<blockquote class="quote">' + esc(v5.split("\n")[0]) + "</blockquote>" : '<p class="quote empty">まだ書いていません。</p>') +
@@ -524,7 +526,7 @@ select { appearance: auto; }
   function footer(ctx, W, H, padX, bottom, t) {
     var y = H - bottom;
     ctx.textBaseline = "alphabetic"; ctx.textAlign = "left"; ctx.fillStyle = t.sub; ctx.font = MONO(26);
-    spaced(ctx, "@" + (state.handle || "yuki"), padX, y, 2);
+    if (state.handle) spaced(ctx, "@" + state.handle.replace(/^@/, ""), padX, y, 2);
     ctx.textAlign = "right"; ctx.fillText("willist", W - padX, y); ctx.textAlign = "left";
   }
   function header(ctx, padX, top, t, title, dateText) {
@@ -597,7 +599,7 @@ select { appearance: auto; }
       radio("kind", "bucket", "叶えたい事(上位10件)", o.kind === "bucket") + radio("kind", "vision", "ありたい姿", o.kind === "vision") + radio("kind", "values", "価値観", o.kind === "values") + "</fieldset>" +
       '<fieldset class="opts sec" style="margin-top:20px"><legend style="font-size:13px;color:var(--ink-soft);letter-spacing:.08em;font-weight:700;margin-bottom:8px;padding:0">見た目</legend>' + Object.keys(TPL).map(function (k) { return radio("tpl", k, TPL_NAME[k], o.tpl === k); }).join("") + "</fieldset>" +
       '<fieldset class="opts sec" style="margin-top:20px"><legend style="font-size:13px;color:var(--ink-soft);letter-spacing:.08em;font-weight:700;margin-bottom:8px;padding:0">サイズ</legend>' + radio("size", "post", "投稿(4:5)", o.size === "post") + radio("size", "story", "ストーリーズ(9:16)", o.size === "story") + "</fieldset>" +
-      '<div class="sec" style="margin-top:24px"><div class="field" style="max-width:260px"><label for="handle">画像に入れる名前</label><input type="text" id="handle" value="' + esc(state.handle) + '"></div></div>' +
+      '<div class="sec" style="margin-top:24px"><div class="field" style="max-width:260px"><label for="handle">画像に入れる名前</label><input type="text" id="handle" value="' + esc(state.handle) + '" placeholder="未入力なら表示しません" autocomplete="off"></div></div>' +
       '<div class="sec" style="margin-top:24px"><div class="field"><label for="caption">キャプションの下書き</label><textarea class="plain captionbox" id="caption"></textarea></div>' +
       '<div class="row"><button class="btn small" id="copyCap" type="button">キャプションをコピー</button><span class="savedmsg mono" id="cmsg" aria-live="polite" style="margin:0"></span></div></div>' +
       "</div>" +
@@ -689,7 +691,7 @@ select { appearance: auto; }
       vTimer = setTimeout(function () { var mm = $("#vmsg"); if (mm) mm.textContent = "保存しました  " + pad(new Date().getHours()) + ":" + pad(new Date().getMinutes()); }, 500);
     }
     if (t.matches && t.matches(".vrow input")) { var row = t.closest(".vrow"); state.values[Number(row.dataset.i)][t.dataset.f] = t.value; save(); }
-    if (t.id === "handle") { state.handle = t.value.trim() || "yuki"; save(); refreshPreview(); }
+    if (t.id === "handle") { state.handle = t.value.trim(); save(); var hh = $("#hello"); if (hh) hh.innerHTML = helloText(); if ($("#pimg")) refreshPreview(); }
     if (t.id === "caption") { ui.exp.caption = t.value; }
   });
   document.addEventListener("change", function (e) {
