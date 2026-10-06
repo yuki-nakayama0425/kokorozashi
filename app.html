@@ -349,11 +349,11 @@ select { appearance: auto; }
   function itemHTML(i) {
     if (ui.editing === i.id) {
       return '<li class="item" data-id="' + i.id + '"><span></span><div class="editrow"><input type="text" id="e-title" value="' + esc(i.title) + '" aria-label="項目">' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap"><select id="e-cat" aria-label="カテゴリ">' + CATS.map(function (c) { return '<option' + (c === i.cat ? " selected" : "") + ">" + c + "</option>"; }).join("") + '</select>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
         '<input type="number" id="e-year" value="' + i.year + '" style="width:96px" aria-label="目標の年">' +
         '<button class="mini" data-act="saveedit" data-id="' + i.id + '">保存</button><button class="mini" data-act="canceledit">やめる</button></div></div></li>';
     }
-    var meta = esc(i.cat) + " ・ " + i.year + "年";
+    var meta = i.year + "年";
     var stamp = i.done ? '<span class="stamp-done">達成 ' + esc(i.doneDate || "") + "</span>" : "";
     var del = ui.confirm === i.id ? '<button class="mini warn" data-act="del" data-id="' + i.id + '">本当に消す</button>' : '<button class="mini" data-act="del" data-id="' + i.id + '">消す</button>';
     return '<li class="item' + (i.done ? " done" : "") + '" data-id="' + i.id + '">' +
@@ -386,8 +386,7 @@ select { appearance: auto; }
     var done = state.items.filter(function (i) { return i.done; }).length;
     var y = now.getFullYear();
     return '<h1>叶えたい事</h1><p class="intro">' + state.items.length + "個のうち、" + done + "個が叶いました。</p>" + noticeHTML() +
-      '<div class="filters" role="group" aria-label="カテゴリで絞り込む">' + ["すべて"].concat(CATS).map(function (c) { return '<button data-act="cat" data-cat="' + c + '" aria-pressed="' + (ui.cat === c) + '">' + c + "</button>"; }).join("") + "</div>" +
-      (shown.length ? '<ul class="list">' + shown.map(itemHTML).join("") + "</ul>" : '<p class="empty-note">このカテゴリにはまだ何もありません。下から書き足せます。</p>') +
+      (shown.length ? '<ul class="list">' + shown.map(itemHTML).join("") + "</ul>" : '<p class="empty-note">まだ何もありません。下から書き足せます。</p>') +
       '<form class="form" id="addForm" autocomplete="off"><div class="field title"><label for="a-title">書き足す</label><input type="text" id="a-title" placeholder="たとえば、オーロラを見に行く" required></div>' +
       '<button class="btn go" type="submit">追加する</button></form>' + bucketExHTML();
   }
@@ -641,7 +640,7 @@ select { appearance: auto; }
     if (act === "toggle" && item) { item.done = !item.done; item.doneDate = item.done ? now.getFullYear() + "." + pad(now.getMonth() + 1) : ""; save(); return render(); }
     if (act === "edit") { ui.editing = id; render(); var f = $("#e-title"); if (f) f.focus(); return; }
     if (act === "canceledit") { ui.editing = null; return render(); }
-    if (act === "saveedit" && item) { var tt = $("#e-title").value.trim(); if (tt) { item.title = tt; item.cat = $("#e-cat").value; item.year = Number($("#e-year").value) || item.year; save(); } ui.editing = null; return render(); }
+    if (act === "saveedit" && item) { var tt = $("#e-title").value.trim(); if (tt) { item.title = tt; item.year = Number($("#e-year").value) || item.year; save(); } ui.editing = null; return render(); }
     if (act === "del") { if (ui.confirm === id) { state.items = state.items.filter(function (i) { return i.id !== id; }); ui.confirm = null; save(); } else ui.confirm = id; return render(); }
     if (act === "cat") { ui.cat = t.dataset.cat; return render(); }
     if (act === "up" && idx > 0) { var a = state.values; var x = a[idx]; a[idx] = a[idx - 1]; a[idx - 1] = x; save(); return render(); }
