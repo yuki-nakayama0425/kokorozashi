@@ -340,7 +340,7 @@ select { appearance: auto; }
       '<section class="sec"><h2>叶ったこと</h2><div class="big"><span class="num">' + done + '</span><span class="of">/ ' + total + ' 個</span></div>' +
       '<div class="meter" role="img" aria-label="達成率 ' + pct + '%"><i style="width:' + pct + '%"></i></div></section>' +
       '<section class="sec"><h2>ありたい姿</h2>' + (v5 ? '<blockquote class="quote">' + esc(v5).replace(/\n/g, "<br>") + "</blockquote>" : '<p class="quote empty">まだ書いていません。</p>') +
-      '<div class="row"><button class="textlink" data-go="vision">書き換える</button></div></section>' +
+      '</section>' +
       '<section class="sec"><h2>価値観</h2>' + (state.values.length ? '<div class="vals-inline">' + state.values.map(function (v) { return "<span>" + esc(v.name) + "</span>"; }).join("") + "</div>" : '<p class="soft">まだ書いていません。</p>') + "</section>" +
       '<section class="sec"><h2>叶えたい事</h2>' + (all.length ? '<ul class="list">' + all.map(itemHTML).join("") + "</ul>" : '<p class="empty-note">まだ書いていません。叶えたい事のタブから書き足せます。</p>') + "</section>";
   }
