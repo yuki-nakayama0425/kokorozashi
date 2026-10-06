@@ -372,7 +372,7 @@ select { appearance: auto; }
   };
   function bucketExHTML() {
     var have = {}; state.items.forEach(function (i) { have[i.title] = true; });
-    return '<section class="sec"><h2>叶えたい事の例</h2><p class="intro" style="margin-top:0">気になる項目を押すと、リストに追加されます(目標は来年に設定されます)。</p>' +
+    return '<section class="sec"><h2>叶えたい事の例</h2><p class="intro" style="margin-top:0">気になる項目を押すと、リストに追加されます。</p>' +
       CATS.map(function (c) {
         return '<div class="exg"><h3>' + c + '</h3><ul class="bex">' + BUCKET_EX[c].map(function (t, k) {
           var added = have[t];
