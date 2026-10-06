@@ -334,7 +334,7 @@ select { appearance: auto; }
     var total = state.items.length, done = state.items.filter(function (i) { return i.done; }).length;
     var pct = total ? Math.round(done / total * 100) : 0;
     var v5 = (state.vision.main || "").trim();
-    var next = sortedOpen().slice(0, 3);
+    var all = state.items.slice().sort(function (x, y) { return (x.done - y.done) || (x.year - y.year); });
     return '<h1 id="hello">' + helloText() + '</h1>' + noticeHTML() +
       '<div class="field" style="max-width:260px;margin-top:4px"><label for="handle">名前(ホームと書き出し画像に使います)</label><input type="text" id="handle" value="' + esc(state.handle) + '" placeholder="未入力でも使えます" autocomplete="off"></div>' +
       '<section class="sec"><h2>叶ったこと</h2><div class="big"><span class="num">' + done + '</span><span class="of">/ ' + total + ' 個</span></div>' +
@@ -342,8 +342,7 @@ select { appearance: auto; }
       '<section class="sec"><h2>ありたい姿</h2>' + (v5 ? '<blockquote class="quote">' + esc(v5.split("\n")[0]) + "</blockquote>" : '<p class="quote empty">まだ書いていません。</p>') +
       '<div class="row"><button class="textlink" data-go="vision">書き換える</button></div></section>' +
       '<section class="sec"><h2>価値観</h2>' + (state.values.length ? '<div class="vals-inline">' + state.values.map(function (v) { return "<span>" + esc(v.name) + "</span>"; }).join("") + "</div>" : '<p class="soft">まだ書いていません。</p>') + "</section>" +
-      '<section class="sec"><h2>近いうちに</h2>' + (next.length ? '<ul class="list">' + next.map(itemHTML).join("") + "</ul>" : '<p class="empty-note">予定のあるものはありません。</p>') +
-      '<div class="row"><button class="textlink" data-go="list">リストを開く</button></div></section>';
+      '<section class="sec"><h2>叶えたい事</h2>' + (all.length ? '<ul class="list">' + all.map(itemHTML).join("") + "</ul>" : '<p class="empty-note">まだ書いていません。叶えたい事のタブから書き足せます。</p>') + "</section>";
   }
 
   /* ---------- リスト ---------- */
