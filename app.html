@@ -272,7 +272,7 @@ select { appearance: auto; }
   var KEY = "lifestar-prototype-v1";
   var MAX_VALUES = 5;
   var CATS = ["旅", "仕事", "学び", "体験", "健康", "人生", "その他"];
-  var TABS = [["home", "ホーム"], ["list", "bucket list"], ["vision", "ありたい姿"], ["values", "価値観"], ["export", "書き出し"]];
+  var TABS = [["home", "ホーム"], ["list", "叶えたい事"], ["vision", "ありたい姿"], ["values", "価値観"], ["export", "書き出し"]];
 
   function sample() {
     var id = 0; function it(title, cat, year, done, dd) { return { id: ++id, title: title, cat: cat, year: year, done: !!done, doneDate: dd || "" }; }
@@ -366,7 +366,7 @@ select { appearance: auto; }
   };
   function bucketExHTML() {
     var have = {}; state.items.forEach(function (i) { have[i.title] = true; });
-    return '<section class="sec"><h2>bucket listの例</h2><p class="intro" style="margin-top:0">気になる項目を押すと、リストに追加されます(目標は来年に設定されます)。</p>' +
+    return '<section class="sec"><h2>叶えたい事の例</h2><p class="intro" style="margin-top:0">気になる項目を押すと、リストに追加されます(目標は来年に設定されます)。</p>' +
       CATS.map(function (c) {
         return '<div class="exg"><h3>' + c + '</h3><ul class="bex">' + BUCKET_EX[c].map(function (t, k) {
           var added = have[t];
@@ -379,7 +379,7 @@ select { appearance: auto; }
     shown.sort(function (a, b) { return (a.done - b.done) || (a.year - b.year); });
     var done = state.items.filter(function (i) { return i.done; }).length;
     var y = now.getFullYear();
-    return '<h1>bucket list</h1><p class="intro">' + state.items.length + "個のうち、" + done + "個が叶いました。</p>" + noticeHTML() +
+    return '<h1>叶えたい事</h1><p class="intro">' + state.items.length + "個のうち、" + done + "個が叶いました。</p>" + noticeHTML() +
       '<div class="filters" role="group" aria-label="カテゴリで絞り込む">' + ["すべて"].concat(CATS).map(function (c) { return '<button data-act="cat" data-cat="' + c + '" aria-pressed="' + (ui.cat === c) + '">' + c + "</button>"; }).join("") + "</div>" +
       (shown.length ? '<ul class="list">' + shown.map(itemHTML).join("") + "</ul>" : '<p class="empty-note">このカテゴリにはまだ何もありません。下から書き足せます。</p>') +
       '<form class="form" id="addForm" autocomplete="off"><div class="field title"><label for="a-title">書き足す</label><input type="text" id="a-title" placeholder="たとえば、オーロラを見に行く" required></div>' +
@@ -534,7 +534,7 @@ select { appearance: auto; }
     var contentBottom = H - bottom - 70;
 
     if (o.kind === "bucket") {
-      var y = header(ctx, padX, top, t, "bucket list", date);
+      var y = header(ctx, padX, top, t, "叶えたい事", date);
       var list = itemsForExport();
       if (!list.length) { ctx.fillStyle = t.sub; ctx.font = BODY(36); ctx.fillText("まだ書かれていません。", padX, y + 60); }
       var n = Math.max(list.length, 1), rowH = Math.min(112, (contentBottom - y) / Math.max(n, 6));
@@ -572,8 +572,8 @@ select { appearance: auto; }
   }
 
   function captionFor() {
-    var o = ui.exp, tags = "\n\n#bucketlist #willist";
-    if (o.kind === "bucket") return "bucket listを更新しました。\n" + itemsForExport().filter(function (i) { return !i.done; }).slice(0, 5).map(function (i, k) { return (k + 1) + ". " + i.title; }).join("\n") + tags;
+    var o = ui.exp, tags = "\n\n#叶えたい事 #willist";
+    if (o.kind === "bucket") return "叶えたい事を更新しました。\n" + itemsForExport().filter(function (i) { return !i.done; }).slice(0, 5).map(function (i, k) { return (k + 1) + ". " + i.title; }).join("\n") + tags;
     if (o.kind === "vision") return ((state.vision.main || "").trim().split("\n")[0] || "ありたい姿を書きました。") + "\n\n#ありたい姿 #willist";
     return "価値観を書き出しました。\n" + state.values.slice(0, 5).map(function (v) { return v.name; }).join(" / ") + "\n\n#価値観 #willist";
   }
@@ -584,7 +584,7 @@ select { appearance: auto; }
     return '<h1>Instagramに書き出す</h1><p class="intro">内容と見た目を選ぶと、プレビューが変わります。</p>' + noticeHTML() +
       '<div class="export"><div>' +
       '<fieldset class="opts sec" style="margin-top:28px"><legend class="sr" style="font-size:13px;color:var(--ink-soft);letter-spacing:.08em;font-weight:700;margin-bottom:8px;padding:0">書き出す内容</legend>' +
-      radio("kind", "bucket", "bucket list(上位10件)", o.kind === "bucket") + radio("kind", "vision", "ありたい姿", o.kind === "vision") + radio("kind", "values", "価値観", o.kind === "values") + "</fieldset>" +
+      radio("kind", "bucket", "叶えたい事(上位10件)", o.kind === "bucket") + radio("kind", "vision", "ありたい姿", o.kind === "vision") + radio("kind", "values", "価値観", o.kind === "values") + "</fieldset>" +
       '<fieldset class="opts sec" style="margin-top:20px"><legend style="font-size:13px;color:var(--ink-soft);letter-spacing:.08em;font-weight:700;margin-bottom:8px;padding:0">見た目</legend>' + Object.keys(TPL).map(function (k) { return radio("tpl", k, TPL_NAME[k], o.tpl === k); }).join("") + "</fieldset>" +
       '<fieldset class="opts sec" style="margin-top:20px"><legend style="font-size:13px;color:var(--ink-soft);letter-spacing:.08em;font-weight:700;margin-bottom:8px;padding:0">サイズ</legend>' + radio("size", "post", "投稿(4:5)", o.size === "post") + radio("size", "story", "ストーリーズ(9:16)", o.size === "story") + "</fieldset>" +
       '<div class="sec" style="margin-top:24px"><div class="field" style="max-width:260px"><label for="handle">画像に入れる名前</label><input type="text" id="handle" value="' + esc(state.handle) + '"></div></div>' +
@@ -597,7 +597,7 @@ select { appearance: auto; }
   function refreshPreview() {
     clearTimeout(renderTimer);
     renderTimer = setTimeout(function () {
-      var all = "bucket list価値観星willist達成ありたい姿" + JSON.stringify(state);
+      var all = "叶えたい事価値観星willist達成ありたい姿" + JSON.stringify(state);
       var loads = [HEAD(40), BODY(40), MONO(24)].map(function (f) { return document.fonts.load(f, all).catch(function () {}); });
       Promise.all(loads).then(function () {
         var img = $("#pimg"); if (!img) return;
