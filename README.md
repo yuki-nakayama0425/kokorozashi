@@ -1,4 +1,4 @@
-# KOKOROZASHI
+# willist
 
 バケットリスト / VISION / 価値観を書きためて、Instagram用の画像として書き出すサイトのHTML試作版です。
 
