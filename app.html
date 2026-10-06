@@ -155,6 +155,11 @@ a { color: inherit; }
 
 .bex.one { columns: 1; }
 
+/* ありたい姿: 改行プレビュー */
+.vprev { border-left: 3px solid var(--indigo); padding: 4px 0 4px 16px; font-family: var(--font-head); font-weight: 700; font-size: 17px; line-height: 1.9; overflow-wrap: anywhere; }
+.vprev .gap { height: 0.9em; }
+.vprev .nl { font-style: normal; font-family: var(--font-mono); font-weight: 400; font-size: 12px; color: var(--indigo); margin-left: 6px; opacity: .8; }
+
 
 /* ---- アプリ ---- */
 .app { max-width: 760px; margin-inline: auto; padding-inline: var(--gutter); padding-block: 0 96px; }
@@ -404,12 +409,18 @@ select { appearance: auto; }
         }).join("") + "</ul></div>";
       }).join("") + "</section>";
   }
+  function vprevHTML(text) {
+    var t = String(text || "").replace(/\s+$/, "");
+    if (!t) return '<p class="soft" style="margin:0">まだ書かれていません。</p>';
+    return t.split("\n").map(function (l) { return l === "" ? '<div class="gap"></div>' : "<div>" + esc(l) + '<i class="nl" aria-hidden="true">↵</i></div>'; }).join("");
+  }
   function viewVision() {
     var cur = state.vision.main || "";
     return '<h1>ありたい姿</h1><p class="intro">これから自分は、どんな人間になりたいか。ありたい姿を文章で書きます。</p>' + noticeHTML() +
       '<div class="sec" style="margin-top:20px"><label class="sr" for="vtext" style="position:absolute;left:-9999px">ありたい姿</label>' +
       '<textarea class="paper" id="vtext" placeholder="ここに書きはじめます。">' + esc(cur) + '</textarea>' +
       '<div class="savedmsg mono" id="vmsg" aria-live="polite"></div></div>' +
+      '<section class="sec"><h2>書き出し画像のイメージ</h2><p class="intro" style="margin-top:0">Enterで入れた改行は、画像にそのまま反映されます。空行は、少しあいた行になります。</p><div class="vprev" id="vprev">' + vprevHTML(cur) + '</div></section>' +
       '<section class="sec"><h2>書き出しに迷ったら</h2><ul class="hints">' + PROMPTS.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ul></section>" + visionExHTML();
   }
 
@@ -554,8 +565,8 @@ select { appearance: auto; }
       ctx.fillRect(padX, top + 62, 130, 10);
       var text = (state.vision.main || "").trim() || "まだ書かれていません。";
       var size2 = 66, lines, lh;
-      do { ctx.font = HEAD(size2); lines = wrapLines(ctx, text, W - padX * 2); lh = size2 * 1.65; size2 -= 2; } while (lines.length * lh > contentBottom - (top + 140) && size2 > 30);
-      ctx.fillStyle = t.fg; lines.forEach(function (ln, i) { ctx.fillText(ln, padX, top + 140 + size2 + i * lh + 20); });
+      do { ctx.font = HEAD(size2); lines = wrapLines(ctx, text, W - padX * 2); lh = size2 * 1.65; size2 -= 2; } while ((lines.filter(function (l) { return l !== ""; }).length + lines.filter(function (l) { return l === ""; }).length * 0.5) * lh > contentBottom - (top + 140) && size2 > 30);
+      ctx.fillStyle = t.fg; var vy = top + 140 + size2 + 20; lines.forEach(function (ln) { if (ln === "") { vy += lh * 0.5; return; } ctx.fillText(ln, padX, vy); vy += lh; });
     } else {
       var y2 = header(ctx, padX, top, t, "価値観", date);
       var vs = state.values.slice(0, MAX_VALUES);
@@ -674,6 +685,7 @@ select { appearance: auto; }
     var t = e.target;
     if (t.id === "vtext") {
       state.vision.main = t.value; save(); clearTimeout(vTimer);
+      var vp = $("#vprev"); if (vp) vp.innerHTML = vprevHTML(t.value);
       var m = $("#vmsg"); if (m) m.textContent = "書き込み中";
       vTimer = setTimeout(function () { var mm = $("#vmsg"); if (mm) mm.textContent = "保存しました  " + pad(new Date().getHours()) + ":" + pad(new Date().getMinutes()); }, 500);
     }
