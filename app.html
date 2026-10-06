@@ -390,7 +390,6 @@ select { appearance: auto; }
       (shown.length ? '<ul class="list">' + shown.map(itemHTML).join("") + "</ul>" : '<p class="empty-note">このカテゴリにはまだ何もありません。下から書き足せます。</p>') +
       '<form class="form" id="addForm" autocomplete="off"><div class="field title"><label for="a-title">書き足す</label><input type="text" id="a-title" placeholder="たとえば、オーロラを見に行く" required></div>' +
       '<div class="field"><label for="a-cat">カテゴリ</label><select id="a-cat">' + CATS.map(function (c) { return "<option>" + c + "</option>"; }).join("") + '</select></div>' +
-      '<div class="field"><label for="a-year">目標の年</label><input type="number" id="a-year" value="' + (y + 1) + '" min="' + y + '" max="2100"></div>' +
       '<button class="btn go" type="submit">追加する</button></form>' + bucketExHTML();
   }
 
@@ -675,7 +674,7 @@ select { appearance: auto; }
     e.preventDefault();
     if (e.target.id === "addForm") {
       var title = $("#a-title").value.trim(); if (!title) return;
-      state.items.push({ id: state.nextId++, title: title, cat: $("#a-cat").value, year: Number($("#a-year").value) || now.getFullYear() + 1, done: false, doneDate: "" });
+      state.items.push({ id: state.nextId++, title: title, cat: $("#a-cat").value, year: now.getFullYear() + 1, done: false, doneDate: "" });
       save(); render(); var f = $("#a-title"); if (f) f.focus();
     }
     if (e.target.id === "vForm") {
