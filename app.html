@@ -98,7 +98,7 @@ a { color: inherit; }
 .sample ol { list-style: none; margin: 5cqw 0 0; padding: 0; flex: 1; }
 .sample li { display: flex; gap: 3.4cqw; align-items: baseline; padding: 1.55cqw 0; border-bottom: 0.25cqw solid var(--s-rule); font-size: 4cqw; line-height: 1.4; }
 .sample li .n { font-family: var(--font-mono); font-size: 2.8cqw; color: var(--s-acc); width: 5cqw; flex: none; }
-.sample .q { font-family: var(--font-head); font-weight: 700; font-size: 6.4cqw; line-height: 1.65; margin-top: 5cqw; flex: 1; }
+.sample .q { font-family: var(--font-head); font-weight: 700; font-size: 6.4cqw; line-height: 1.65; margin-top: 5cqw; flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
 .sample .lbl { font-family: var(--font-mono); font-size: 2.7cqw; letter-spacing: .14em; color: var(--s-acc); }
 .sample .bar { width: 12cqw; height: 1cqw; background: var(--s-acc); margin-top: 3cqw; }
 .sample .vals { list-style: none; margin: 6cqw 0 0; padding: 0; flex: 1; }
@@ -566,8 +566,12 @@ select { appearance: auto; }
       ctx.fillRect(padX, top + 62, 130, 10);
       var text = (state.vision.main || "").trim() || "まだ書かれていません。";
       var size2 = 66, lines, lh;
-      do { ctx.font = HEAD(size2); lines = wrapLines(ctx, text, W - padX * 2); lh = size2 * 1.65; size2 -= 2; } while ((lines.filter(function (l) { return l !== ""; }).length + lines.filter(function (l) { return l === ""; }).length * 0.5) * lh > contentBottom - (top + 140) && size2 > 30);
-      ctx.fillStyle = t.fg; var vy = top + 140 + size2 + 20; lines.forEach(function (ln) { if (ln === "") { vy += lh * 0.5; return; } ctx.fillText(ln, padX, vy); vy += lh; });
+      do { ctx.font = HEAD(size2); lines = wrapLines(ctx, text, W - padX * 2); lh = size2 * 1.65; size2 -= 2; } while ((lines.filter(function (l) { return l !== ""; }).length + lines.filter(function (l) { return l === ""; }).length * 0.5) * lh > contentBottom - (top + 100) && size2 > 30);
+      ctx.fillStyle = t.fg; ctx.textAlign = "center";
+      var vh = lines.reduce(function (s, l) { return s + (l === "" ? lh * 0.5 : lh); }, 0), areaTop = top + 100, areaH = contentBottom - areaTop;
+      var vy = areaTop + Math.max(0, (areaH - vh) / 2) + lh * 0.72;
+      lines.forEach(function (ln) { if (ln === "") { vy += lh * 0.5; return; } ctx.fillText(ln, W / 2, vy); vy += lh; });
+      ctx.textAlign = "left";
     } else {
       var y2 = header(ctx, padX, top, t, "価値観", date);
       var vs = state.values.slice(0, MAX_VALUES);
