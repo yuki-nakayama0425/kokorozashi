@@ -444,27 +444,26 @@ select { appearance: auto; }
       }).join("") + "</section>";
   }
   /* カードで選ぶ: 手元5枚を1枚ずつ入れ替えて、残った5枚を価値観にする */
-  var MAX_ROUNDS = 10;
   function deckAll() { var d = []; EXAMPLES.forEach(function (g) { g[1].forEach(function (e) { d.push({ name: e[0], desc: e[1] }); }); }); return d; }
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function dealCards(theme) {
     var deck = shuffle(deckAll()), hand = deck.splice(0, MAX_VALUES);
-    ui.cards = { phase: "play", theme: theme, hand: hand, deck: deck, drawn: deck.pop(), rounds: 0 };
+    ui.cards = { phase: "play", theme: theme, hand: hand, deck: deck, drawn: deck.pop(), rounds: 0, total: deck.length + 1 };
   }
   function discardCard(i) {
     var c = ui.cards; if (!c || c.phase !== "play") return;
     if (i < MAX_VALUES) c.hand[i] = c.drawn;
     c.rounds++;
-    if (c.rounds >= MAX_ROUNDS || !c.deck.length) { c.drawn = null; c.phase = "result"; } else c.drawn = c.deck.pop();
+    if (!c.deck.length) { c.drawn = null; c.phase = "result"; } else c.drawn = c.deck.pop();
   }
   function cardBtn(card, i, drawn) {
     return '<button class="vcard' + (drawn ? " drawn" : "") + '" data-act="cdiscard" data-i="' + i + '">' + (drawn ? '<i class="tag mono">いま引いたカード</i>' : "") + "<b>" + esc(card.name) + "</b><span>" + esc(card.desc) + "</span></button>";
   }
   function cardsHTML() {
     var c = ui.cards, head = '<section class="sec"><h2>カードで選ぶ</h2>';
-    if (!c) return head + '<p class="intro" style="margin-top:0;max-width:34em">言葉が浮かばないときは、カードを引くように選べます。手元の' + MAX_VALUES + "枚を1枚ずつ入れ替え、最後に残った" + MAX_VALUES + '枚があなたの価値観になります。</p><div class="row"><button class="btn small" data-act="cstart">カードをはじめる</button></div></section>';
+    if (!c) return head + '<p class="intro" style="margin-top:0;max-width:34em">言葉が浮かばないときは、カードを引くように選べます。手元の' + MAX_VALUES + "枚から始めて、山札のカードを全部、1枚ずつ引いては入れ替えて捨てていきます。最後に残った" + MAX_VALUES + '枚があなたの価値観になります。途中で「ここで決める」を押して終わることもできます。</p><div class="row"><button class="btn small" data-act="cstart">カードをはじめる</button></div></section>';
     if (c.phase === "play") {
-      return head + '<p class="mono" style="font-size:12px;color:var(--ink-soft);margin:0 0 4px">' + (c.rounds + 1) + " 回目(全" + MAX_ROUNDS + "回)</p>" +
+      return head + '<p class="mono" style="font-size:12px;color:var(--ink-soft);margin:0 0 4px">' + (c.rounds + 1) + " / " + c.total + " 枚目</p>" +
         '<p style="margin:0 0 14px">今の自分が大切にしているものから、いちばん遠い1枚を選んで捨てます。</p><div class="deckrow">' +
         c.hand.map(function (cd, i) { return cardBtn(cd, i, false); }).join("") + cardBtn(c.drawn, MAX_VALUES, true) + "</div>" +
         '<div class="row"><span class="mono" style="font-size:12px;color:var(--ink-soft)">山札 残り ' + c.deck.length + ' 枚</span><button class="textlink" data-act="cfinish">ここで決める</button><button class="mini" data-act="cquit">やめる</button></div></section>';
