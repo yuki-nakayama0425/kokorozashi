@@ -563,10 +563,10 @@ select { appearance: auto; }
       var text = (state.vision.main || "").trim() || "まだ書かれていません。";
       var size2 = 66, lines, lh;
       do { ctx.font = HEAD(size2); lines = wrapLines(ctx, text, W - padX * 2); lh = size2 * 1.65; size2 -= 2; } while ((lines.filter(function (l) { return l !== ""; }).length + lines.filter(function (l) { return l === ""; }).length * 0.5) * lh > contentBottom - (top + 100) && size2 > 30);
-      ctx.fillStyle = t.fg; ctx.textAlign = "center";
+      ctx.fillStyle = t.fg; ctx.textAlign = "left";
       var vh = lines.reduce(function (s, l) { return s + (l === "" ? lh * 0.5 : lh); }, 0), areaTop = top + 100, areaH = contentBottom - areaTop;
       var vy = areaTop + Math.max(0, (areaH - vh) / 2 - lh) + lh * 0.72;
-      lines.forEach(function (ln) { if (ln === "") { vy += lh * 0.5; return; } ctx.fillText(ln, W / 2, vy); vy += lh; });
+      lines.forEach(function (ln) { if (ln === "") { vy += lh * 0.5; return; } ctx.fillText(ln, padX, vy); vy += lh; });
       ctx.textAlign = "left";
     } else {
       var y2 = header(ctx, padX, top, t, "価値観", date);
